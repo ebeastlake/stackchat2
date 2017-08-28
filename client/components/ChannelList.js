@@ -6,8 +6,8 @@ import { withRouter } from 'react-router';
 const mapStateToProps = function(state) {
   console.log(state); 
     return {
-      channels: state.ChannelReducer.channels,
-      messages: state.MessagesReducer.messages
+      channels: state.channels,
+      messages: state.messages
     };
 }
 

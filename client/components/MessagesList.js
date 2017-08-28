@@ -21,7 +21,7 @@ export default class Messages extends Component {
   render () {
     const channelId = Number(this.props.match.params.channelId); // because it's a string "1", not a number!
     console.log("sdlfjs", this.state);
-    const messages = this.state.MessagesReducer.messages;
+    const messages = this.state.messages;
     const filteredMessages = messages.filter(message => message.channelId === channelId);
 
     return (
