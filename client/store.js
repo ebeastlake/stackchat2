@@ -10,7 +10,9 @@ import socket from './socket';
 const initialState = {
   messages: [],
   name: 'Reggie',
-  newMessageEntry: ''
+  newMessageEntry: '',
+  channels: [], 
+  newChannelEntry: ''
 };
 
 // ACTION TYPES
@@ -19,6 +21,9 @@ const UPDATE_NAME = 'UPDATE_NAME';
 const GET_MESSAGE = 'GET_MESSAGE';
 const GET_MESSAGES = 'GET_MESSAGES';
 const WRITE_MESSAGE = 'WRITE_MESSAGE';
+const GET_CHANNEL = 'GET_CHANNEL';
+const GET_CHANNELS = 'GET_CHANNELS';
+const WRITE_CHANNEL_NAME = 'WRITE_CHANNEL_NAME';
 
 // ACTION CREATORS
 
@@ -39,6 +44,21 @@ export function getMessages (messages) {
 
 export function writeMessage (content) {
   const action = { type: WRITE_MESSAGE, content };
+  return action;
+}
+
+export function getChannel (channel) {
+  const action = { type: GET_CHANNEL, channel };
+  return action;
+}
+
+export function getChannels (channels) {
+  const action = { type: GET_CHANNELS, channels };
+  return action;
+}
+
+export function writeChannelName (content) {
+  const action = { type: WRITE_CHANNEL_NAME, content };
   return action;
 }
 
@@ -67,7 +87,34 @@ export function postMessage (message) {
         socket.emit('new-message', newMessage);
       });
   }
+}
 
+export function fetchChannels () {
+
+  return function thunk (dispatch) {
+    return axios.get('/api/channels')
+    .then(res => res.data)
+    .then(channels => {
+      const action = getChannels(channels);
+      dispatch(action);
+    })
+  }
+}
+
+export function postChannel (channel, history) {
+
+  return function thunk(dispatch) {
+    return axios.post('/api/channels', channel)
+    .then(res => res.data)
+    .then(newChannel => {
+      const action = getChannel(newChannel);
+      dispatch(action);
+      socket.emit('new-channel', newChannel);
+      // const clear = writeChannelName('');
+      // dispatch(clear);
+      history.push(`/channels/${newChannel.id}`);
+    })
+  }
 }
 
 // REDUCER
@@ -121,6 +168,24 @@ function reducer (state = initialState, action) {
         ...state,
         newMessageEntry: action.content
       };
+
+    case GET_CHANNELS:
+      return {
+        ...state, 
+        channels: action.channels
+      };
+
+    case GET_CHANNEL:
+      return {
+        ...state,
+        channels: [...state.channels, action.channel]
+      }
+
+    case WRITE_CHANNEL_NAME:
+      return {
+        ...state,
+        newChannelEntry: action.content
+      }
 
     default:
       return state;
