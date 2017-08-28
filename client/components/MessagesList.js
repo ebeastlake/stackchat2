@@ -19,12 +19,13 @@ export default class Messages extends Component {
   }
 
   render () {
-
     const channelId = Number(this.props.match.params.channelId); // because it's a string "1", not a number!
-    const messages = this.state.messages;
+    console.log("sdlfjs", this.state);
+    const messages = this.state.MessagesReducer.messages;
     const filteredMessages = messages.filter(message => message.channelId === channelId);
 
     return (
+
       <div>
         <ul className="media-list">
           { filteredMessages.map(message => <Message message={message} key={message.id} />) }

@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router'; 
 
 const mapStateToProps = function(state) {
+  console.log(state); 
     return {
-      channels: state.channels,
-      messages: state.messages
+      channels: state.ChannelReducer.channels,
+      messages: state.MessagesReducer.messages
     };
 }
 
@@ -14,7 +16,7 @@ const mapStateToProps = function(state) {
 // }
 
 function ChannelList(props) {
-
+  console.log(props); 
   return (
     <ul>
     {
@@ -36,5 +38,6 @@ function ChannelList(props) {
     );
 }
 
+
 const ChannelListContainer = connect(mapStateToProps)(ChannelList);
-export default ChannelListContainer;
+export default withRouter(ChannelListContainer); 
